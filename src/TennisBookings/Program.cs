@@ -13,7 +13,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddHostedService<InitialiseDatabaseService>();
 
 #region InternalSetup
-var connection = new SqliteConnection("Filename=:memory:");
+// using var connection = new SqliteConnection("Filename=:memory:");
+using var connection = new SqliteConnection("Filename=test.db");
 connection.Open();
 
 // Add services to the container.

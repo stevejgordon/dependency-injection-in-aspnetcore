@@ -25,11 +25,15 @@ namespace TennisBookings.BackgroundService
                 Email = "admin@example.com",
                 EmailConfirmed = true
             };
-            var password = new PasswordHasher<IdentityUser>();
-            var hashed = password.HashPassword(user, "password");
-            user.PasswordHash = hashed;
 
-            await userManager.CreateAsync(user);
+            if (await userManager.FindByNameAsync("admin@example.com") is null)
+            {
+                var password = new PasswordHasher<IdentityUser>();
+                var hashed = password.HashPassword(user, "password");
+                user.PasswordHash = hashed;
+
+                await userManager.CreateAsync(user);
+            }
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
