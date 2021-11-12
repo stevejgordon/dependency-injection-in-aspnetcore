@@ -1,6 +1,7 @@
 #region Global Usings
 global using Microsoft.AspNetCore.Identity;
 
+global using TennisBookings;
 global using TennisBookings.Data;
 global using TennisBookings.Domain;
 global using TennisBookings.Extensions;
@@ -14,10 +15,17 @@ global using TennisBookings.Shared.Weather;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using TennisBookings.BackgroundService;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizePage("/Bookings");
+    options.Conventions.AuthorizePage("/BookCourt");
+    options.Conventions.AuthorizePage("/FindAvailableCourts");
+    options.Conventions.Add(new PageRouteTransformerConvention(new SlugifyParameterTransformer()));
+});
 
 #region InternalSetup
 using var connection = new SqliteConnection("Filename=:memory:");
