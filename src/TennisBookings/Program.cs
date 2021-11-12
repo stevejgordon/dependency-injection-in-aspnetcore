@@ -27,7 +27,20 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.Add(new PageRouteTransformerConvention(new SlugifyParameterTransformer()));
 });
 
-builder.Services.AddSingleton<IWeatherForecaster, RandomWeatherForecaster>();
+//builder.Services.AddSingleton<IWeatherForecaster, RandomWeatherForecaster>();
+
+var serviceDescriptor1 = new ServiceDescriptor(typeof(IWeatherForecaster),
+	typeof(RandomWeatherForecaster), ServiceLifetime.Singleton);
+
+var serviceDescriptor2 = ServiceDescriptor.Describe(typeof(IWeatherForecaster),
+	typeof(RandomWeatherForecaster), ServiceLifetime.Singleton);
+
+var serviceDescriptor3 = ServiceDescriptor.Singleton(typeof(IWeatherForecaster),
+	typeof(RandomWeatherForecaster));
+
+var serviceDescriptor4 = ServiceDescriptor.Singleton<IWeatherForecaster, RandomWeatherForecaster>();
+
+builder.Services.Add(serviceDescriptor1);
 
 #region InternalSetup
 using var connection = new SqliteConnection("Filename=:memory:");
