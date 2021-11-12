@@ -1,10 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace TennisBookings.Pages
 {
     public class IndexModel : PageModel
     {
-        public string WeatherDescription { get; private set; } =
+		private readonly IWeatherForecaster _weatherForecaster;
+		private readonly ILogger<IndexModel> _logger;
+
+		public IndexModel(IWeatherForecaster weatherForecaster, ILogger<IndexModel> logger)
+		{
+			_weatherForecaster = weatherForecaster;
+			_logger = logger;
+		}
+
+		public string WeatherDescription { get; private set; } =
             "We don't have the latest weather information right now, please check again later.";
 
         public bool ShowWeatherForecast => true;
@@ -13,11 +22,9 @@ namespace TennisBookings.Pages
 
         public async Task OnGet()
         {
-            var weatherForecaster = new RandomWeatherForecaster();
-
             try
             {
-                var currentWeather = await weatherForecaster.GetCurrentWeatherAsync("Eastbourne");
+                var currentWeather = await _weatherForecaster.GetCurrentWeatherAsync("Eastbourne");
 
                 switch (currentWeather.Weather.Summary)
                 {
@@ -40,8 +47,8 @@ namespace TennisBookings.Pages
             }
             catch
             {
-                // TODO: Log message
-            }
+				_logger.LogError("Unable to get current weather");
+			}
         }
     }
 }

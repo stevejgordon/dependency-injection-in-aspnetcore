@@ -27,6 +27,8 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.Add(new PageRouteTransformerConvention(new SlugifyParameterTransformer()));
 });
 
+builder.Services.AddSingleton<IWeatherForecaster, RandomWeatherForecaster>();
+
 #region InternalSetup
 using var connection = new SqliteConnection("Filename=:memory:");
 //using var connection = new SqliteConnection("Filename=test.db");
