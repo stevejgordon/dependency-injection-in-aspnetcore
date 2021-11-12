@@ -1,6 +1,4 @@
-﻿using WeatherService.Api.Services;
-
-namespace WeatherService.Api
+﻿namespace WeatherService.Api
 {
     public class Startup
     {
@@ -16,8 +14,6 @@ namespace WeatherService.Api
         {
             services.AddControllers();
             services.AddMemoryCache();
-
-            services.AddSingleton<IWeatherProvider, RandomisedWeatherProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

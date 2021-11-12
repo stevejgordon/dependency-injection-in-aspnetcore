@@ -1,44 +1,82 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using TennisBookings.Data;
 
-namespace TennisBookings.BackgroundService
+namespace TennisBookings.BackgroundService;
+
+public class InitialiseDatabaseService : IHostedService
 {
-    public class InitialiseDatabaseService : IHostedService
-    {
-        private readonly IServiceProvider _serviceProvider;
+	private readonly IServiceProvider _serviceProvider;
 
-        public InitialiseDatabaseService(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
+	private const string AdminEmail = "admin@example.com";
+	private const string MemberEmail = "member@example.com";
+	private const string AdminRole = "Admin";
 
-        public async Task StartAsync(CancellationToken cancellationToken)
-        {
-            // Blocks until this is completed
+	public InitialiseDatabaseService(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
 
-            using var serviceScope = _serviceProvider.CreateScope();
-            
-            var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            dbContext.Database.EnsureCreated();
+	public async Task StartAsync(CancellationToken cancellationToken)
+	{
+		// Blocks until this is completed
 
-            var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+		using var serviceScope = _serviceProvider.CreateScope();
 
-            var user = new IdentityUser("admin@example.com")
-            {
-                Email = "admin@example.com",
-                EmailConfirmed = true
-            };
+		var dbContext = serviceScope.ServiceProvider.GetRequiredService<TennisBookingsDbContext>();
+		dbContext.Database.EnsureCreated();
 
-            if (await userManager.FindByNameAsync("admin@example.com") is null)
-            {
-                var password = new PasswordHasher<IdentityUser>();
-                var hashed = password.HashPassword(user, "password");
-                user.PasswordHash = hashed;
+		var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<TennisBookingsUser>>();
+		var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<TennisBookingsRole>>();
 
-                await userManager.CreateAsync(user);
-            }
-        }
+		if (!await roleManager.RoleExistsAsync(AdminRole))
+		{
+			var adminRole = new TennisBookingsRole { Name = AdminRole };
+			await roleManager.CreateAsync(adminRole);
+		}
 
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-    }
+		var adminUser = new TennisBookingsUser()
+		{
+			UserName = AdminEmail,
+			Email = AdminEmail,
+			EmailConfirmed = true,
+			IsAdmin = true
+		};
+
+		if (await userManager.FindByNameAsync(AdminEmail) is null)
+		{
+			var password = new PasswordHasher<TennisBookingsUser>();
+			var hashed = password.HashPassword(adminUser, "password");
+			adminUser.PasswordHash = hashed;
+
+			var result = await userManager.CreateAsync(adminUser);
+
+			if (result.Succeeded)
+			{
+				await userManager.AddToRoleAsync(adminUser, AdminRole);
+			}
+		}
+
+		var memberUser = new TennisBookingsUser()
+		{
+			UserName = MemberEmail,
+			Email = MemberEmail,
+			EmailConfirmed = true,
+			Member = new Member
+			{
+				Forename = "Steve",
+				Surname = "Gordon",
+				JoinDate = DateTime.UtcNow.Date
+			}
+		};
+
+		if (await userManager.FindByNameAsync(MemberEmail) is null)
+		{
+			var password = new PasswordHasher<TennisBookingsUser>();
+			var hashed = password.HashPassword(memberUser, "password");
+			adminUser.PasswordHash = hashed;
+
+			_ = await userManager.CreateAsync(memberUser);
+		}
+	}
+
+	public Task StopAsync(CancellationToken cancellationToken)
+	{
+		return Task.CompletedTask;
+	}
 }

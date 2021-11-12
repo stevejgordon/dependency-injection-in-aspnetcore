@@ -1,25 +1,39 @@
-using Microsoft.AspNetCore.Identity;
+#region Global Usings
+global using Microsoft.AspNetCore.Identity;
+
+global using TennisBookings.Data;
+global using TennisBookings.Domain;
+global using TennisBookings.Extensions;
+global using TennisBookings.Configuration;
+global using TennisBookings.Services.Bookings;
+global using TennisBookings.Services.Greetings;
+global using TennisBookings.Services.Unavailability;
+global using TennisBookings.Shared.Weather;
+#endregion
+
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using TennisBookings.BackgroundService;
-using TennisBookings.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
-
 builder.Services.AddRazorPages();
-builder.Services.AddHostedService<InitialiseDatabaseService>();
 
 #region InternalSetup
-// using var connection = new SqliteConnection("Filename=:memory:");
-using var connection = new SqliteConnection("Filename=test.db");
+using var connection = new SqliteConnection("Filename=:memory:");
+//using var connection = new SqliteConnection("Filename=test.db");
 connection.Open();
 
 // Add services to the container.
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connection));
+builder.Services.AddDbContext<TennisBookingsDbContext>(options => options.UseSqlite(connection));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddIdentity<TennisBookingsUser, TennisBookingsRole>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddEntityFrameworkStores<TennisBookingsDbContext>()
+    .AddDefaultUI()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddHostedService<InitialiseDatabaseService>();
 #endregion
 
 var app = builder.Build();
