@@ -1,7 +1,7 @@
-﻿namespace TennisBookings.Configuration
+namespace TennisBookings.Configuration
 {
-	public class ClubConfiguration
-    {
+	public class ClubConfiguration : IClubConfiguration
+	{
         public int PeakStartHour { get; set; }
 
         public int PeakEndHour { get; set; }
