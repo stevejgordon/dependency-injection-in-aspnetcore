@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace TennisBookings.BackgroundService;
 
@@ -69,7 +69,7 @@ public class InitialiseDatabaseService : IHostedService
 		{
 			var password = new PasswordHasher<TennisBookingsUser>();
 			var hashed = password.HashPassword(memberUser, "password");
-			adminUser.PasswordHash = hashed;
+			memberUser.PasswordHash = hashed;
 
 			_ = await userManager.CreateAsync(memberUser);
 		}
