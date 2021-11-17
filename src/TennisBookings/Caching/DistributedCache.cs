@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace TennisBookings.Caching
@@ -22,7 +22,7 @@ namespace TennisBookings.Caching
 		{
 			var value = await GetAsync(key);
 
-			return (value is null, value);
+			return (value is not null, value);
 		}
 
 		public async Task<T?> GetAsync(string key)

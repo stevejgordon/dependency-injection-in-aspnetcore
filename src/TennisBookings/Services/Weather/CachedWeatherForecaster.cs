@@ -12,7 +12,7 @@ public class CachedWeatherForecaster : IWeatherForecaster
 		_cache = cache;
 	}
 
-	public async Task<WeatherResult> GetCurrentWeatherAsync(string city)
+	public async Task<WeatherResult?> GetCurrentWeatherAsync(string city)
 	{
 		var cacheKey = $"{city}_current_weather_{DateTime.UtcNow:yyyy_MM_dd}";
 
@@ -23,7 +23,8 @@ public class CachedWeatherForecaster : IWeatherForecaster
 
 		var result = await _weatherForecaster.GetCurrentWeatherAsync(city);
 
-		await _cache.SetAsync(cacheKey, result, 60);
+		if (result is not null)
+			await _cache.SetAsync(cacheKey, result, 60);
 
 		return result;
 	}
