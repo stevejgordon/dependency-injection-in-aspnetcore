@@ -1,4 +1,4 @@
-﻿namespace TennisBookings.DependencyInjection
+namespace TennisBookings.DependencyInjection
 {
 	public static class StaffServiceCollectionExtensions
 	{

@@ -15,10 +15,12 @@ global using TennisBookings.Services.Time;
 global using TennisBookings.Shared.Weather;
 global using TennisBookings.DependencyInjection;
 global using TennisBookings.Services.Staff;
+global using TennisBookings.Caching;
+global using TennisBookings.Services.Security;
+global using Microsoft.EntityFrameworkCore;
 #endregion
 
 using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
 using TennisBookings.BackgroundService;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
@@ -33,12 +35,20 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.Add(new PageRouteTransformerConvention(new SlugifyParameterTransformer()));
 });
 
-builder.Services.AddSingleton<IWeatherForecaster, RandomWeatherForecaster>();
-
 builder.Services
 	.AddAppConfiguration(builder.Configuration)
 	.AddBookingServices()
-	.AddBookingRules();
+	.AddBookingRules()
+	.AddCourtUnavailability()
+	.AddMembershipServices()
+	.AddStaffServices()
+	.AddCourtServices() // - to be replaced with Autofac registration in ConfigureContainer
+	.AddWeatherForecasting()
+	.AddNotifications()
+	.AddGreetings()
+	.AddCaching()
+	.AddTimeServices()
+	.AddAuditing();
 
 #region InternalSetup
 using var connection = new SqliteConnection("Filename=:memory:");

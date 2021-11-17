@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Identity;
-
 namespace TennisBookings.BackgroundService;
 
 public class InitialiseDatabaseService : IHostedService

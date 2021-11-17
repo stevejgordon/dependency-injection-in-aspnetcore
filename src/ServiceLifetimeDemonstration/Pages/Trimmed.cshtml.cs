@@ -1,9 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ServiceLifetimeDemonstration.Pages
 {
-    public class BoomModel : PageModel
+	public class BoomModel : PageModel
     {
 		private readonly IGuidTrimmer _guidTrimmer;
 

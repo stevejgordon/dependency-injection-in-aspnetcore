@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace TennisBookings.Data
 {
-    public class TennisBookingsDbContext : IdentityDbContext<TennisBookingsUser, TennisBookingsRole, string>
+	public class TennisBookingsDbContext : IdentityDbContext<TennisBookingsUser, TennisBookingsRole, string>
     {
         public TennisBookingsDbContext(DbContextOptions<TennisBookingsDbContext> options)
             : base(options)

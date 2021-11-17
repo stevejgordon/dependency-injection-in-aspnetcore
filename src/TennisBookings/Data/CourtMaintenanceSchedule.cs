@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace TennisBookings.Data
+﻿namespace TennisBookings.Data
 {
-    public class CourtMaintenanceSchedule
+	public class CourtMaintenanceSchedule
     {
         public int Id { get; set; }
 

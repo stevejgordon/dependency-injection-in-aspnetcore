@@ -7,13 +7,13 @@ namespace TennisBookings.Services.Bookings
 		private readonly INotificationService _notificationService;
 
 		public CourtBookingManager(
-			ICourtBookingService bookingService
-			//IBookingRuleProcessor bookingRuleProcessor,
-			/*INotificationService notificationService*/)
+			ICourtBookingService bookingService,
+			IBookingRuleProcessor bookingRuleProcessor,
+			INotificationService notificationService)
 		{
 			_bookingService = bookingService;
-			//_bookingRuleProcessor = bookingRuleProcessor;
-			//_notificationService = notificationService;
+			_bookingRuleProcessor = bookingRuleProcessor;
+			_notificationService = notificationService;
 		}
 
 		public async Task<CourtBookingResult> MakeBookingAsync(DateTime startDateTime, DateTime endDateTime, int courtId, Member member)
@@ -26,14 +26,14 @@ namespace TennisBookings.Services.Bookings
 				EndDateTime = endDateTime
 			};
 
-			//var (passedRules, errors) = await _bookingRuleProcessor.PassesAllRulesAsync(courtBooking);
+			var (passedRules, errors) = await _bookingRuleProcessor.PassesAllRulesAsync(courtBooking);
 
-			//if (!passedRules)
-			//	return CourtBookingResult.Failure(errors);
+			if (!passedRules)
+				return CourtBookingResult.Failure(errors);
 
 			await _bookingService.CreateCourtBooking(courtBooking);
 
-			//await _notificationService.SendAsync("Thank you. Your booking is confirmed", member.User!.Id);
+			await _notificationService.SendAsync("Thank you. Your booking is confirmed", member.User!.Id);
 
 			return CourtBookingResult.Success(courtBooking);
 		}

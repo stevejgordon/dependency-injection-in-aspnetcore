@@ -1,5 +1,3 @@
-using TennisBookings.Configuration;
-
 namespace TennisBookings.Services.Bookings.Rules
 {
 	public interface ICourtBookingRule

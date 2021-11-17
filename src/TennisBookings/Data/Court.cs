@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-
 namespace TennisBookings.Data
 {
-    public class Court
+	public class Court
     {
         public int Id { get; set; }
 

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using TennisBookings.Services.Bookings;
 
 namespace TennisBookings.Services.Unavailability
 {

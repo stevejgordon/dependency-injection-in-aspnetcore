@@ -1,6 +1,4 @@
-﻿using TennisBookings.Services.Bookings;
-
-namespace TennisBookings.Services.Unavailability
+﻿namespace TennisBookings.Services.Unavailability
 {
 	public class UpcomingHoursUnavailabilityProvider : IUnavailabilityProvider
     {

@@ -1,16 +1,14 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace TennisBookings.Services.Bookings
 {
 	public class CourtBookingService : ICourtBookingService
 {
 		private readonly TennisBookingsDbContext _dbContext;
-		private readonly IUtcTimeService _utcTimeService = new TimeService();
+		private readonly IUtcTimeService _utcTimeService;
 
-		public CourtBookingService(TennisBookingsDbContext dbContext/*, IUtcTimeService utcTimeService*/)
+		public CourtBookingService(TennisBookingsDbContext dbContext, IUtcTimeService utcTimeService)
 		{
 			_dbContext = dbContext;
-			//_utcTimeService = utcTimeService;
+			_utcTimeService = utcTimeService;
 		}
 
 		public async Task CreateCourtBooking(CourtBooking courtBooking)

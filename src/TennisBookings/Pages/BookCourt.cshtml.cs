@@ -1,15 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.ComponentModel;
 
 namespace TennisBookings.Pages
 {
-    // URL: /BookCourt/1?BookingStartTime=20190301T10:00:00
-
-    public class BookCourtModel : PageModel
+	public class BookCourtModel : PageModel
     {
         private readonly ICourtBookingManager _courtBookingManager;
         private readonly UserManager<TennisBookingsUser> _userManager;

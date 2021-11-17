@@ -1,16 +1,14 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace TennisBookings.Services.Bookings
 {
 	public class CourtService : ICourtService
 	{
 		private readonly TennisBookingsDbContext _dbContext;
-		//private readonly IAuditor<CourtService> _auditor;
+		private readonly IAuditor<CourtService> _auditor;
 
-		public CourtService(TennisBookingsDbContext dbContext/*, IAuditor<CourtService> auditor*/)
+		public CourtService(TennisBookingsDbContext dbContext, IAuditor<CourtService> auditor)
 		{
 			_dbContext = dbContext;
-			//_auditor = auditor;
+			_auditor = auditor;
 		}
 
 		public async Task<IEnumerable<Court>> GetOutdoorCourts() =>
@@ -18,7 +16,7 @@ namespace TennisBookings.Services.Bookings
 
 		public async Task<HashSet<int>> GetCourtIds()
 		{
-			//_auditor.RecordAction("Test");
+			_auditor.RecordAction("Test");
 
 			var ids = await GetQueryableCourts().Select(c => c.Id).OrderBy(c => c).ToListAsync();
 			return ids.ToHashSet();
