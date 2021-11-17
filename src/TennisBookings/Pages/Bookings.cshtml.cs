@@ -27,7 +27,7 @@ namespace TennisBookings.Pages
         {
             var user = await _userManager.Users
                 .Include(u => u.Member)
-                .FirstOrDefaultAsync(u => u.NormalizedEmail == User.Identity!.Name);
+                .FirstOrDefaultAsync(u => u.UserName == User.Identity!.Name);
 
             if (user == null)
                 return new ChallengeResult();

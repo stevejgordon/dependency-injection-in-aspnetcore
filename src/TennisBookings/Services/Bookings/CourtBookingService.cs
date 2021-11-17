@@ -1,7 +1,7 @@
 namespace TennisBookings.Services.Bookings
 {
 	public class CourtBookingService : ICourtBookingService
-{
+	{
 		private readonly TennisBookingsDbContext _dbContext;
 		private readonly IUtcTimeService _utcTimeService;
 
@@ -45,11 +45,14 @@ namespace TennisBookings.Services.Bookings
 
 		public async Task<IEnumerable<CourtBooking>> BookingsUntilDateAsync(DateTime date)
 		{
+			var currentDate = _utcTimeService.CurrentUtcDateTime;
+			var endTime = date.Date.AddDays(1).AddMilliseconds(-1);
+
 			var bookings = await _dbContext.CourtBookings!
 				.AsNoTracking()
 				.Include(x => x.Court)
 				.Include(x => x.Member)
-				.Where(x => x.StartDateTime >= _utcTimeService.CurrentUtcDateTime && x.EndDateTime < date.Date.AddDays(1).AddMilliseconds(-1))
+				.Where(x => x.StartDateTime >= currentDate && x.EndDateTime < endTime)
 				.ToListAsync();
 
 			return bookings;
@@ -57,9 +60,11 @@ namespace TennisBookings.Services.Bookings
 
 		public async Task<IEnumerable<CourtBooking>> BookingsForDayAsync(DateTime date)
 		{
+			var endTime = date.Date.AddDays(1).AddMilliseconds(-1);
+
 			var bookings = await _dbContext.CourtBookings!
 				.AsNoTracking()
-				.Where(x => x.StartDateTime >= date.Date && x.EndDateTime < date.Date.AddDays(1).AddMilliseconds(-1))
+				.Where(x => x.StartDateTime >= date.Date && x.EndDateTime < endTime)
 				.ToListAsync();
 
 			return bookings;
@@ -67,9 +72,11 @@ namespace TennisBookings.Services.Bookings
 
 		public async Task<IEnumerable<CourtBooking>> CourtBookingsForDayAsync(DateTime date, int courtId)
 		{
+			var endTime = date.Date.AddDays(1).AddMilliseconds(-1);
+
 			var bookings = await _dbContext.CourtBookings!
 				.AsNoTracking()
-				.Where(x => x.StartDateTime >= date.Date && x.EndDateTime < date.Date.AddDays(1).AddMilliseconds(-1) && x.CourtId == courtId)
+				.Where(x => x.StartDateTime >= date.Date && x.EndDateTime < endTime && x.CourtId == courtId)
 				.ToListAsync();
 
 			return bookings;
@@ -77,9 +84,11 @@ namespace TennisBookings.Services.Bookings
 
 		public async Task<IEnumerable<CourtBooking>> MemberBookingsForDayAsync(DateTime date, Member member)
 		{
+			var endTime = date.Date.AddDays(1).AddMilliseconds(-1);
+
 			var bookings = await _dbContext.CourtBookings!
 				.AsNoTracking()
-				.Where(x => x.StartDateTime >= date.Date && x.EndDateTime < date.Date.AddDays(1).AddMilliseconds(-1) && x.Member == member)
+				.Where(x => x.StartDateTime >= date.Date && x.EndDateTime < endTime && x.Member == member)
 				.ToListAsync();
 
 			return bookings;
@@ -87,9 +96,11 @@ namespace TennisBookings.Services.Bookings
 
 		public async Task<IEnumerable<CourtBooking>> GetFutureBookingsForMemberAsync(Member member)
 		{
+			var currentDate = _utcTimeService.CurrentUtcDateTime;
+
 			return await _dbContext.CourtBookings!
 				.AsNoTracking()
-				.Where(c => c.Member == member && c.StartDateTime >= DateTimeOffset.UtcNow)
+				.Where(c => c.Member == member && c.StartDateTime >= currentDate)
 				.OrderBy(x => x.StartDateTime)
 				.ToListAsync();
 		}
@@ -106,9 +117,11 @@ namespace TennisBookings.Services.Bookings
 
 		public async Task<int> GetBookedHoursForMemberAsync(Member member, DateTime date)
 		{
+			var endTime = date.Date.AddDays(1).AddMilliseconds(-1);
+
 			var bookings = await _dbContext.CourtBookings!
 				.AsNoTracking()
-				.Where(c => c.Member == member && c.StartDateTime >= date.Date && c.EndDateTime <= date.Date.AddDays(1).AddMilliseconds(-1))
+				.Where(c => c.Member == member && c.StartDateTime >= date.Date && c.EndDateTime <= endTime)
 				.ToListAsync();
 
 			var hoursBooked = 0;

@@ -27,15 +27,6 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages(options =>
-{
-    options.Conventions.AuthorizePage("/Bookings");
-    options.Conventions.AuthorizePage("/BookCourt");
-    options.Conventions.AuthorizePage("/FindAvailableCourts");
-    options.Conventions.Add(new PageRouteTransformerConvention(new SlugifyParameterTransformer()));
-});
-
 builder.Services
 	.AddAppConfiguration(builder.Configuration)
 	.AddBookingServices()
@@ -50,6 +41,15 @@ builder.Services
 	.AddCaching()
 	.AddTimeServices()
 	.AddAuditing();
+
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizePage("/Bookings");
+    options.Conventions.AuthorizePage("/BookCourt");
+    options.Conventions.AuthorizePage("/FindAvailableCourts");
+    options.Conventions.Add(new PageRouteTransformerConvention(new SlugifyParameterTransformer()));
+});
 
 #region InternalSetup
 using var connection = new SqliteConnection("Filename=:memory:");

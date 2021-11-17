@@ -9,15 +9,15 @@ namespace TennisBookings.Data
         {
         }
 
-        public DbSet<Court>? Courts { get; set; }
+        public DbSet<Court> Courts => Set<Court>();
 
-        public DbSet<CourtBooking>? CourtBookings { get; set; }
+		public DbSet<CourtBooking> CourtBookings => Set<CourtBooking>();
 
-        public DbSet<Member>? Members { get; set; }
+		public DbSet<Member> Members => Set<Member>();
 
-        public DbSet<CourtMaintenanceSchedule>? CourtMaintenance { get; set; }
+		public DbSet<CourtMaintenanceSchedule> CourtMaintenance => Set<CourtMaintenanceSchedule>();
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Member>()
                 .HasOne(x => x.User)

@@ -1,3 +1,4 @@
+#nullable disable
 namespace TennisBookings.Data
 {
 	public class Court
@@ -11,3 +12,4 @@ namespace TennisBookings.Data
         public ICollection<CourtBooking> Bookings { get; set; }
     }
 }
+#nullable restore

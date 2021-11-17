@@ -1,4 +1,4 @@
-﻿
+#nullable disable
 namespace TennisBookings.Data
 {
     public class CourtBooking
@@ -9,12 +9,13 @@ namespace TennisBookings.Data
 
         public int MemberId { get; set; }
 
-        public Member? Member { get; set; }
+        public Member Member { get; set; }
 
-        public Court? Court { get; set; }
+        public Court Court { get; set; }
 
         public DateTime StartDateTime { get; set; }
 
         public DateTime EndDateTime { get; set; }
     }
 }
+#nullable restore
