@@ -1,4 +1,4 @@
-﻿namespace TennisBookings.Services.Greetings
+namespace TennisBookings.Services.Greetings
 {
 	public interface IGreetingService
     {

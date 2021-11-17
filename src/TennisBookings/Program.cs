@@ -9,6 +9,10 @@ global using TennisBookings.Configuration;
 global using TennisBookings.Services.Bookings;
 global using TennisBookings.Services.Greetings;
 global using TennisBookings.Services.Unavailability;
+global using TennisBookings.Services.Security;
+global using TennisBookings.Services.Bookings.Rules;
+global using TennisBookings.Services.Notifications;
+global using TennisBookings.Services.Time;
 global using TennisBookings.Shared.Weather;
 #endregion
 
@@ -16,6 +20,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using TennisBookings.BackgroundService;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,20 +32,12 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.Add(new PageRouteTransformerConvention(new SlugifyParameterTransformer()));
 });
 
-//builder.Services.AddSingleton<IWeatherForecaster, RandomWeatherForecaster>();
+builder.Services.AddSingleton<IWeatherForecaster, RandomWeatherForecaster>();
 
-var serviceDescriptor1 = new ServiceDescriptor(typeof(IWeatherForecaster),
-	typeof(RandomWeatherForecaster), ServiceLifetime.Singleton);
-
-var serviceDescriptor2 = ServiceDescriptor.Describe(typeof(IWeatherForecaster),
-	typeof(RandomWeatherForecaster), ServiceLifetime.Singleton);
-
-var serviceDescriptor3 = ServiceDescriptor.Singleton(typeof(IWeatherForecaster),
-	typeof(RandomWeatherForecaster));
-
-var serviceDescriptor4 = ServiceDescriptor.Singleton<IWeatherForecaster, RandomWeatherForecaster>();
-
-builder.Services.Add(serviceDescriptor1);
+builder.Services.TryAddScoped<ICourtService, CourtService>();
+builder.Services.TryAddScoped<ICourtBookingManager, CourtBookingManager>();
+builder.Services.TryAddScoped<IBookingService, BookingService>();
+builder.Services.TryAddScoped<ICourtBookingService, CourtBookingService>();
 
 #region InternalSetup
 using var connection = new SqliteConnection("Filename=:memory:");
@@ -69,7 +66,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

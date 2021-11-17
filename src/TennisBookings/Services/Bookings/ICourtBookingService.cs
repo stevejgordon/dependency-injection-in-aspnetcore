@@ -1,4 +1,4 @@
-﻿namespace TennisBookings.Services.Bookings
+namespace TennisBookings.Services.Bookings
 {
 	public interface ICourtBookingService
     {
@@ -6,7 +6,7 @@
 
         Task<bool> CancelBooking(int bookingId);
 
-        Task<CourtBooking> LoadBooking(int bookingId);
+        Task<CourtBooking?> LoadBooking(int bookingId);
 
         Task<IEnumerable<CourtBooking>> BookingsUntilDateAsync(DateTime date);
 

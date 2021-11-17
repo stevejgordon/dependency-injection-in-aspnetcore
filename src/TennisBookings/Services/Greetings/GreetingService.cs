@@ -1,71 +1,65 @@
-﻿using Microsoft.Extensions.Options;
 using System.Text.Json;
 
 namespace TennisBookings.Services.Greetings
 {
-	public class GreetingService : IGreetingService
-    {
-        private static readonly ThreadLocal<Random> Random = new(() => new Random());
+	public class GreetingService : IHomePageGreetingService, IGreetingService
+	{
+		private static readonly ThreadLocal<Random> Random = new(() => new Random());
 
-        private GreetingConfiguration _greetingConfiguration;
+		public GreetingService(IWebHostEnvironment webHostEnvironment)
+		{
+			var webRootPath = webHostEnvironment.WebRootPath;
 
-        public GreetingService(
-            IWebHostEnvironment webHostEnvironment,
-            ILogger<GreetingConfiguration> logger,
-            IOptionsMonitor<GreetingConfiguration> options)
-        {
-            var webRootPath = webHostEnvironment.WebRootPath;
-            var greetingsJson = File.ReadAllText(webRootPath + "/greetings.json");
-            var greetingsData = JsonSerializer.Deserialize<GreetingData>(greetingsJson);
+			var greetingsJson = File.ReadAllText(webRootPath + "/greetings.json");
 
-            if (greetingsData is not null)
+			var greetingsData = JsonSerializer.Deserialize<GreetingData>(greetingsJson);
+
+			if (greetingsData is not null)
 			{
-                Greetings = greetingsData.Greetings;
-                LoginGreetings = greetingsData.LoginGreetings;
-            }
+				Greetings = greetingsData.Greetings;
+				LoginGreetings = greetingsData.LoginGreetings;
+			}
+		}
 
-            _greetingConfiguration = options.CurrentValue;
+		public string[] Greetings { get; } = Array.Empty<string>();
 
-            options.OnChange(config =>
-            {
-                _greetingConfiguration = config;
-                logger.LogInformation("The greeting configuration has been updated.");
-            });
-        }
+		public string[] LoginGreetings { get; } = Array.Empty<string>();
 
-        public string[] Greetings { get; } = Array.Empty<string>();
+		public string GreetingColour => "blue";
 
-        public string[] LoginGreetings { get; } = Array.Empty<string>();
+		[Obsolete("Prefer the GetRandomGreeting method defined in IGreetingService")]
+		public string GetRandomHomePageGreeting()
+		{
+			return GetRandomGreeting();
+		}
 
-        public string GreetingColour => _greetingConfiguration.GreetingColour ?? "blue";
+		public string GetRandomGreeting()
+		{
+			return GetRandomValue(Greetings);
+		}
 
-        public string GetRandomGreeting()
-        {
-            return GetRandomValue(Greetings);
-        }
+		public string GetRandomLoginGreeting(string name)
+		{
+			var loginGreeting = GetRandomValue(LoginGreetings);
 
-        public string GetRandomLoginGreeting(string name)
-        {
-            var loginGreeting = GetRandomValue(LoginGreetings);
+			return loginGreeting.Replace("{name}", name);
+		}
 
-            return loginGreeting.Replace("{name}", name);
-        }
+		private string GetRandomValue(IReadOnlyList<string> greetings)
+		{
+			if (greetings.Count == 0)
+				return string.Empty;
 
-        private string GetRandomValue(IReadOnlyList<string> greetings)
-        {
-            if (greetings.Count == 0)
-                return string.Empty;
+			var greetingToUse = Random.Value!.Next(greetings.Count);
 
-            var greetingToUse = Random.Value!.Next(greetings.Count);
+			return greetingToUse >= 0 ? greetings[greetingToUse] : string.Empty;
+		}
 
-            return greetingToUse >= 0 ? greetings[greetingToUse] : string.Empty;
-        }
+		private class GreetingData
+		{
+			public string[] Greetings { get; set; } = Array.Empty<string>();
 
-        private class GreetingData
-        {
-            public string[] Greetings { get; set; } = Array.Empty<string>();
-
-            public string[] LoginGreetings { get; set; } = Array.Empty<string>();
-        }
-    }
+			public string[] LoginGreetings { get; set; } = Array.Empty<string>();
+		}
+	}
 }

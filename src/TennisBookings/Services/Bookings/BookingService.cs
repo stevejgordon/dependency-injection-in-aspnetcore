@@ -1,6 +1,7 @@
-﻿namespace TennisBookings.Services.Bookings
+namespace TennisBookings.Services.Bookings
 {
-    public class BookingService : IBookingService
+
+	public class BookingService : IBookingService
     {
         private readonly IEnumerable<IUnavailabilityProvider> _unavailabilityProviders;
         private readonly ICourtService _courtService;

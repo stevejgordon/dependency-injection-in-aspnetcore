@@ -1,4 +1,4 @@
-﻿namespace TennisBookings.Services.Bookings
+namespace TennisBookings.Services.Bookings
 {
 	public interface ICourtService
 	{
