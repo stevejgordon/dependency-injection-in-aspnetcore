@@ -1,4 +1,6 @@
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging.Abstractions;
+using Moq;
+using TennisBookings.Shared.Weather;
 
 namespace TennisBookings.Tests.Pages
 {
@@ -7,7 +9,19 @@ namespace TennisBookings.Tests.Pages
         [Fact]
         public async Task ReturnsExpectedViewModel_WhenWeatherIsSun()
         {
-			var sut = new IndexModel();
+			var mockWeatherForecaster = new Mock<IWeatherForecaster>();
+			mockWeatherForecaster.Setup(w => w.GetCurrentWeatherAsync(It.IsAny<string>())).ReturnsAsync(new WeatherResult
+			{
+				Weather = new WeatherCondition
+				{
+					Summary = "Sun",
+					Temperature = new Temperature(26, 28),
+					Wind = new Wind(2, 25)
+				},
+				City = "city"
+			});
+
+			var sut = new IndexModel(mockWeatherForecaster.Object, NullLogger<IndexModel>.Instance);
 
 			await sut.OnGet();
 
@@ -17,7 +31,19 @@ namespace TennisBookings.Tests.Pages
         [Fact]
         public async Task ReturnsExpectedViewModel_WhenWeatherIsRain()
         {
-			var sut = new IndexModel();
+			var mockWeatherForecaster = new Mock<IWeatherForecaster>();
+			mockWeatherForecaster.Setup(w => w.GetCurrentWeatherAsync(It.IsAny<string>())).ReturnsAsync(new WeatherResult
+			{
+				Weather = new WeatherCondition
+				{
+					Summary = "Rain",
+					Temperature = new Temperature(21, 23),
+					Wind = new Wind(6, 130)
+				},
+				City = "city"
+			});
+
+			var sut = new IndexModel(mockWeatherForecaster.Object, NullLogger<IndexModel>.Instance);
 
 			await sut.OnGet();
 

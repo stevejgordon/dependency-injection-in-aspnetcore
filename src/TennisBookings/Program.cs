@@ -9,21 +9,22 @@ global using TennisBookings.Configuration;
 global using TennisBookings.Services.Bookings;
 global using TennisBookings.Services.Greetings;
 global using TennisBookings.Services.Unavailability;
-global using TennisBookings.Services.Security;
 global using TennisBookings.Services.Bookings.Rules;
 global using TennisBookings.Services.Notifications;
 global using TennisBookings.Services.Time;
 global using TennisBookings.Shared.Weather;
+global using TennisBookings.DependencyInjection;
+global using TennisBookings.Services.Staff;
 #endregion
 
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using TennisBookings.BackgroundService;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizePage("/Bookings");
@@ -34,10 +35,10 @@ builder.Services.AddRazorPages(options =>
 
 builder.Services.AddSingleton<IWeatherForecaster, RandomWeatherForecaster>();
 
-builder.Services.TryAddScoped<ICourtService, CourtService>();
-builder.Services.TryAddScoped<ICourtBookingManager, CourtBookingManager>();
-builder.Services.TryAddScoped<IBookingService, BookingService>();
-builder.Services.TryAddScoped<ICourtBookingService, CourtBookingService>();
+builder.Services
+	.AddAppConfiguration(builder.Configuration)
+	.AddBookingServices()
+	.AddBookingRules();
 
 #region InternalSetup
 using var connection = new SqliteConnection("Filename=:memory:");
@@ -78,5 +79,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
+app.MapControllerRoute(
+	name: "default",
+	pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

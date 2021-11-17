@@ -1,6 +1,6 @@
-﻿namespace TennisBookings.Extensions
+namespace TennisBookings.Extensions
 {
-    public static class IntegerExtensions
+	public static class IntegerExtensions
     {
         public static string To12HourClockString(this int hour)
         {
