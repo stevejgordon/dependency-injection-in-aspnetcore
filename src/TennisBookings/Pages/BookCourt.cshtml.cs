@@ -53,11 +53,14 @@ namespace TennisBookings.Pages
                 return new BadRequestResult();
             }
 
-            var user = await _userManager.Users
-                .Include(u => u.Member)
-                .FirstOrDefaultAsync(u => u.NormalizedEmail == User.Identity.Name);
+			if (User.Identity is null)
+				return new ChallengeResult();
 
-            if (user == null)
+			var user = await _userManager.Users
+                .Include(u => u.Member)
+                .FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
+
+            if (user is null)
                 return new ChallengeResult();
             
             var result = await _courtBookingManager.MakeBookingAsync(BookingStartTime, BookingStartTime.AddHours(BookingLengthInHours), CourtId, user.Member);

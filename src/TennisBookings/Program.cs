@@ -24,6 +24,9 @@ global using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
 using TennisBookings.BackgroundService;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Autofac.Extensions.DependencyInjection;
+using Autofac;
+using Autofac.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +37,7 @@ builder.Services
 	.AddCourtUnavailability()
 	.AddMembershipServices()
 	.AddStaffServices()
-	.AddCourtServices() // - to be replaced with Autofac registration in ConfigureContainer
+	//.AddCourtServices() // - to be replaced with Autofac registration in ConfigureContainer
 	.AddWeatherForecasting()
 	.AddNotifications()
 	.AddGreetings()
@@ -49,6 +52,14 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizePage("/BookCourt");
     options.Conventions.AuthorizePage("/FindAvailableCourts");
     options.Conventions.Add(new PageRouteTransformerConvention(new SlugifyParameterTransformer()));
+});
+
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
+{
+	builder.RegisterType<CourtMaintenanceService>()
+		.As<ICourtMaintenanceService>()
+		.InstancePerLifetimeScope();
 });
 
 #region InternalSetup
@@ -66,6 +77,11 @@ builder.Services.AddIdentity<TennisBookingsUser, TennisBookingsRole>(options => 
     .AddDefaultTokenProviders();
 
 builder.Services.AddHostedService<InitialiseDatabaseService>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+	options.AccessDeniedPath = "/identity/account/access-denied";
+});
 #endregion
 
 var app = builder.Build();
@@ -89,10 +105,9 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapRazorPages();
-
 app.MapControllerRoute(
 	name: "default",
 	pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapRazorPages();
 
 app.Run();

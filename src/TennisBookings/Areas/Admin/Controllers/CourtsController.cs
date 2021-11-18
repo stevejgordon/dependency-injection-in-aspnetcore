@@ -79,4 +79,23 @@ public class CourtsController : Controller
 
 		return RedirectToAction("WeeklyBookings");
 	}
+
+	[Route("Maintenance/Upcoming")]
+	public async Task<ActionResult> UpcomingMaintenance([FromServices] ICourtMaintenanceService courtMaintenanceService)
+	{
+		var maintenanceSchedules = await courtMaintenanceService.GetUpcomingMaintenance();
+
+		var maintenanceViewModels = maintenanceSchedules.Select(x => new CourtMaintenanceViewModel
+		{
+			CourtName = x.Court.Name,
+			StartDateTime = x.StartDate,
+			EndDateTime = x.EndDate,
+			Title = x.WorkTitle,
+			CourtIsClosed = x.CourtIsClosed
+		}).GroupBy(x => x.StartDateTime.Date);
+
+		var viewModel = new MaintenanceListerViewModel { ScheduledMaintenanceWork = maintenanceViewModels };
+
+		return View(viewModel);
+	}
 }

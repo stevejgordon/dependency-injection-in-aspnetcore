@@ -11,7 +11,7 @@ namespace TennisBookings.Data
         
         public DateTime JoinDate { get; set; }
 
-		public ICollection<CourtBooking> CourtBookings { get; set; } = Array.Empty<CourtBooking>();
+		public ICollection<CourtBooking> CourtBookings { get; set; }
 
         public string UserId { get; set; }
 
