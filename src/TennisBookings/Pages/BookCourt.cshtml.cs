@@ -8,20 +8,24 @@ namespace TennisBookings.Pages
 {
 	public class BookCourtModel : PageModel
     {
-        private readonly ICourtBookingManager _courtBookingManager;
-        private readonly UserManager<TennisBookingsUser> _userManager;
-        private readonly IBookingService _bookingService;
-        private readonly BookingConfiguration _bookingConfiguration;
+		private readonly UserManager<TennisBookingsUser> _userManager;
+		private readonly BookingConfiguration _bookingConfiguration;
+		private readonly ICourtBookingManager _courtBookingManager;
+		private readonly IBookingService _bookingService;
 
-        public BookCourtModel(ICourtBookingManager courtBookingManager, UserManager<TennisBookingsUser> userManager, IOptions<BookingConfiguration> bookingConfig, IBookingService bookingService)
-        {
-            _courtBookingManager = courtBookingManager;
-            _userManager = userManager;
-            _bookingService = bookingService;
-            _bookingConfiguration = bookingConfig.Value;
-        }
+		public BookCourtModel(
+			UserManager<TennisBookingsUser> userManager,
+			IOptions<BookingConfiguration> bookingConfig,
+			ICourtBookingManager courtBookingManager,
+			IBookingService bookingService)
+		{
+			_userManager = userManager;
+			_bookingConfiguration = bookingConfig.Value;
+			_courtBookingManager = courtBookingManager;
+			_bookingService = bookingService;
+		}
 
-        public string[] Errors { get; set; } = Array.Empty<string>();
+		public string[] Errors { get; set; } = Array.Empty<string>();
 
         [BindProperty(SupportsGet = true)]
         public DateTime BookingStartTime { get; set; }
