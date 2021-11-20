@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Mvc;
 using TennisBookings.Shared.Weather;
 
 namespace WeatherService.Api.Controllers
@@ -8,28 +7,17 @@ namespace WeatherService.Api.Controllers
     [ApiController]
     public class CurrentWeatherController : ControllerBase
     {
-        private readonly IMemoryCache _memoryCache;
+		private readonly IWeatherForecaster _weatherForecaster;
 
-        public CurrentWeatherController(IMemoryCache memoryCache)
+		public CurrentWeatherController(IWeatherForecaster weatherForecaster)
         {
-            _memoryCache = memoryCache;
-        }
+			_weatherForecaster = weatherForecaster;
+		}
 
         [HttpGet("{city}")]
         public async Task<ActionResult<WeatherResult>> Get(string city)
         {
-            if (_memoryCache.TryGetValue(city, out var weather))
-            {
-                if (weather is WeatherResult result)
-                {
-                    return result;
-                }
-            }
-
-            var weatherForecaster = new RandomWeatherForecaster();
-            var currentWeather = await weatherForecaster.GetCurrentWeatherAsync(city);
-
-            _memoryCache.Set(city, currentWeather, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(60 * 12)));
+            var currentWeather = await _weatherForecaster.GetCurrentWeatherAsync(city);
 
             return currentWeather;
         }

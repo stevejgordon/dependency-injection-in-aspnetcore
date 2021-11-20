@@ -1,4 +1,6 @@
-﻿namespace WeatherService.Api
+using TennisBookings.Shared.Weather;
+
+namespace WeatherService.Api
 {
     public class Startup
     {
@@ -13,7 +15,7 @@
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddMemoryCache();
+			services.AddSingleton<IWeatherForecaster, RandomWeatherForecaster>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
