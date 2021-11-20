@@ -2,19 +2,19 @@ namespace TennisBookings.BackgroundService;
 
 public class InitialiseDatabaseService : IHostedService
 {
-	private readonly IServiceProvider _serviceProvider;
+	private readonly IServiceScopeFactory _scopeFactory;
 
 	private const string AdminEmail = "admin@example.com";
 	private const string MemberEmail = "member@example.com";
 	private const string AdminRole = "Admin";
 
-	public InitialiseDatabaseService(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
+	public InitialiseDatabaseService(IServiceScopeFactory scopeFactory) => _scopeFactory = scopeFactory;
 
 	public async Task StartAsync(CancellationToken cancellationToken)
 	{
 		// Blocks until this is completed
 
-		using var serviceScope = _serviceProvider.CreateScope();
+		await using var serviceScope = _scopeFactory.CreateAsyncScope();
 
 		var dbContext = serviceScope.ServiceProvider.GetRequiredService<TennisBookingsDbContext>();
 		dbContext.Database.EnsureCreated();

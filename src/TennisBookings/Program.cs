@@ -26,7 +26,6 @@ using TennisBookings.BackgroundService;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Autofac.Extensions.DependencyInjection;
 using Autofac;
-using Autofac.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
