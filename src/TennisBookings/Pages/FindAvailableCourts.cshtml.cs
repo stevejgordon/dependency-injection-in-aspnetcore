@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace TennisBookings.Pages
@@ -12,7 +13,8 @@ namespace TennisBookings.Pages
             _bookingService = bookingService;
         }
 
-        [BindProperty(SupportsGet = true)]
+		[DisplayName("Search Date")]
+		[BindProperty(SupportsGet = true)]
         public DateTime SearchDate { get; set; }
 
         public IEnumerable<TableData> Availability { get; set; } = Enumerable.Empty<TableData>();

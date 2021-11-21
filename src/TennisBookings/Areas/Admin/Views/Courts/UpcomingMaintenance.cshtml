@@ -15,10 +15,8 @@
             {
                 <div class="@(maintenanceWork.CourtIsClosed ? "alert alert-warning" : "alert alert-success")">
                     <p><strong>@(maintenanceWork.CourtIsClosed ? "CLOSED" : "OPEN")</strong></p>
-                    <p>
-                        <strong>@maintenanceWork.CourtName</strong>: @maintenanceWork.StartDateTime.Hour.To12HourClockString() to @maintenanceWork.EndDateTime.Hour.To12HourClockString()<br/>
-                        <em>@maintenanceWork.Title</em>
-                    </p>
+                     <strong>@maintenanceWork.CourtName</strong>: @maintenanceWork.StartDateTime.Hour.To12HourClockString() to @maintenanceWork.EndDateTime.Hour.To12HourClockString()<br/>
+                     <em>@maintenanceWork.Title</em>
                 </div>
                 }
             </div>
