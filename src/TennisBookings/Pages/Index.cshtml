@@ -1,10 +1,20 @@
-﻿@page
+@page
 @model IndexModel
 @{
     ViewData["Title"] = "Welcome to Tennis by the Sea";
 }
 
 <h1>@ViewData["Title"]</h1>
+
+@if (User?.Identity is not null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+{
+    <div class="row">
+        <div class="col-md-12">
+            <a class="btn btn-primary" asp-area="Admin" asp-controller="Home" asp-action="Index">Admin Home</a>
+        </div>
+    </div>
+    <div class="row"><br/></div>
+}
 
 @if (Model.ShowWeatherForecast)
 {

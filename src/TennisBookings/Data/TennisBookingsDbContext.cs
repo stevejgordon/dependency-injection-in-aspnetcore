@@ -31,14 +31,16 @@ namespace TennisBookings.Data
                 new Court { Id = 4, Name = "Court 4", Type = CourtType.Outdoor },
                 new Court { Id = 5, Name = "Court 5", Type = CourtType.Outdoor });
 
+			var year = DateTime.Now.Year + 1;
+
             modelBuilder.Entity<CourtMaintenanceSchedule>().HasData(
                 new CourtMaintenanceSchedule
                 {
                     Id = 1,
                     WorkTitle = "Resurface",
                     CourtIsClosed = true,
-                    StartDate = new DateTime(2019, 03, 01, 06, 00, 00),
-                    EndDate = new DateTime(2019, 03, 07, 22, 00, 00),
+                    StartDate = new DateTime(year, 03, 01, 06, 00, 00),
+                    EndDate = new DateTime(year, 03, 07, 22, 00, 00),
                     CourtId = 4
                 },
                 new CourtMaintenanceSchedule
@@ -46,8 +48,8 @@ namespace TennisBookings.Data
                     Id = 2,
                     WorkTitle = "Replace Seats",
                     CourtIsClosed = false,
-                    StartDate = new DateTime(2019, 04, 15, 12, 00, 00),
-                    EndDate = new DateTime(2019, 04, 15, 13, 15, 00),
+                    StartDate = new DateTime(year, 04, 15, 12, 00, 00),
+                    EndDate = new DateTime(year, 04, 15, 13, 15, 00),
                     CourtId = 1
                 },
                 new CourtMaintenanceSchedule
@@ -55,8 +57,8 @@ namespace TennisBookings.Data
                     Id = 3,
                     WorkTitle = "Replace Net",
                     CourtIsClosed = true,
-                    StartDate = new DateTime(2019, 02, 08, 07, 00, 00),
-                    EndDate = new DateTime(2019, 02, 08, 09, 00, 00),
+                    StartDate = new DateTime(year, 02, 08, 07, 00, 00),
+                    EndDate = new DateTime(year, 02, 08, 09, 00, 00),
                     CourtId = 2
                 });
 

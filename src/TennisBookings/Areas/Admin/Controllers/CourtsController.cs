@@ -11,17 +11,20 @@ namespace TennisBookings.Areas.Admin.Controllers;
 public class CourtsController : Controller
 {
 	private readonly ICourtBookingService _courtBookingService;
+	private readonly IUtcTimeService _utcTimeService;
 
-	public CourtsController(ICourtBookingService courtBookingService)
+	public CourtsController(ICourtBookingService courtBookingService, IUtcTimeService utcTimeService)
 	{
 		_courtBookingService = courtBookingService;
+		_utcTimeService = utcTimeService;
 	}
 
 	[HttpGet]
 	[Route("Bookings/Upcoming")]
 	public async Task<ActionResult> WeeklyBookings()
 	{
-		var bookings = await _courtBookingService.BookingsUntilDateAsync(DateTime.UtcNow.GetEndOfWeek());
+		var bookings = await _courtBookingService
+			.BookingsUntilDateAsync(_utcTimeService.CurrentUtcDateTime.GetEndOfWeek().AddDays(7));
 
 		var bookingsViewModel = bookings.Select(x => new CourtBookingViewModel
 		{
@@ -32,7 +35,11 @@ public class CourtsController : Controller
 			MemberName = $"{x.Member!.Forename} {x.Member.Surname}"
 		}).GroupBy(x => x.StartDateTime.Date);
 
-		var viewModel = new BookingListerViewModel { CourtBookings = bookingsViewModel, EndOfWeek = DateTime.UtcNow.GetEndOfWeek() };
+		var viewModel = new BookingListerViewModel
+		{
+			CourtBookings = bookingsViewModel,
+			EndOfWeek = _utcTimeService.CurrentUtcDateTime.GetEndOfWeek().AddDays(7)
+		};
 
 		if (TempData.TryGetValue("BookingCancelled", out var successObject) is bool success)
 		{

@@ -35,11 +35,9 @@
                         <strong>@booking.CourtName</strong>: @booking.StartDateTime.Hour.To12HourClockString() to @booking.EndDateTime.Hour.To12HourClockString()<br />
                         <em>@booking.MemberName</em>
                     </p>
-                    <p>
-                        <a asp-controller="Courts" asp-action="CancelBookingConfirmation" asp-route-bookingId="@booking.BookingId" class="btn btn-danger" role="button">
-                            Cancel Booking
-                        </a>
-                    </p>
+                    <a asp-controller="Courts" asp-action="CancelBookingConfirmation" asp-route-bookingId="@booking.BookingId" class="btn btn-danger" role="button">
+                        Cancel Booking
+                    </a>
                 </div>
             }
         </div>
