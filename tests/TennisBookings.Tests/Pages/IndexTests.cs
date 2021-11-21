@@ -5,7 +5,7 @@ public class IndexTests
 	[Fact]
 	public async Task ReturnsExpectedViewModel_WhenWeatherIsSun()
 	{
-		var sut = new IndexModel(new SunnyForecaster(), NullLogger<IndexModel>.Instance);
+		var sut = new IndexModel(new SunForecaster(), NullLogger<IndexModel>.Instance);
 
 		await sut.OnGet();
 
@@ -15,40 +15,34 @@ public class IndexTests
 	[Fact]
 	public async Task ReturnsExpectedViewModel_WhenWeatherIsRain()
 	{
-		var sut = new IndexModel(new RainyForecaster(), NullLogger<IndexModel>.Instance);
+		var sut = new IndexModel(new RainForecaster(), NullLogger<IndexModel>.Instance);
 
 		await sut.OnGet();
 
 		Assert.Contains("We're sorry but it's raining here.", sut.WeatherDescription);
 	}
 
-	private class SunnyForecaster : IWeatherForecaster
+	private class SunForecaster : IWeatherForecaster
 	{
-		public Task<WeatherResult?> GetCurrentWeatherAsync(string city)
-			=> Task.FromResult<WeatherResult?>(new WeatherResult
+		public Task<WeatherResult> GetCurrentWeatherAsync(string city)
+		{
+			return Task.FromResult(new WeatherResult
 			{
-				Weather = new WeatherCondition
-				{
-					Summary = "Sun",
-					Temperature = new Temperature(26, 28),
-					Wind = new Wind(2, 25)
-				},
-				City = city
+				City = city,
+				Weather = new WeatherCondition { Summary = "Sun" }
 			});
+		}
 	}
 
-	private class RainyForecaster : IWeatherForecaster
+	private class RainForecaster : IWeatherForecaster
 	{
-		public Task<WeatherResult?> GetCurrentWeatherAsync(string city)
-			=> Task.FromResult<WeatherResult?>(new WeatherResult
+		public Task<WeatherResult> GetCurrentWeatherAsync(string city)
+		{
+			return Task.FromResult(new WeatherResult
 			{
-				Weather = new WeatherCondition
-				{
-					Summary = "Rain",
-					Temperature = new Temperature(21, 23),
-					Wind = new Wind(6, 130)
-				},
-				City = city
+				City = city,
+				Weather = new WeatherCondition { Summary = "Rain" }
 			});
+		}
 	}
 }
