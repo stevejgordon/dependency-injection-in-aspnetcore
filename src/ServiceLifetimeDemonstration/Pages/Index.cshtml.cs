@@ -5,12 +5,15 @@ namespace ServiceLifetimeDemonstration.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-		private readonly GuidService _guidService;
+		private readonly IGuidService _guidService;
+		private readonly DisposableService _disposableService;
 
-		public IndexModel(ILogger<IndexModel> logger, GuidService guidService)
+		public IndexModel(ILogger<IndexModel> logger, IGuidService guidService,
+			DisposableService disposableService)
         {
             _logger = logger;
 			_guidService = guidService;
+			_disposableService = disposableService;
 		}
 
 		public string Guid { get; private set; } = "Missing";
@@ -23,12 +26,14 @@ namespace ServiceLifetimeDemonstration.Pages
 
 			Guid = guid;
 
-			if (HttpContext.Items.TryGetValue(CustomMiddleware.MiddlewareGuid, out var mwGuid) && mwGuid is string middlewareGuid)
+			if (HttpContext.Items.TryGetValue(CustomMiddleware.MiddlewareGuid,
+				out var mwGuid) && mwGuid is string middlewareGuid)
 			{
 				GuidFromMiddleware = middlewareGuid;
 			}
 
-			_logger.LogInformation($"Controller: The GUID from the GuidService is {guid}");
+			_logger.LogInformation($"Controller: The GUID from the " +
+				$"GuidService is {guid}");
 		}
     }
 }

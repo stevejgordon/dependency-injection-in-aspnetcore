@@ -1,10 +1,10 @@
-﻿namespace ServiceLifetimeDemonstration;
+namespace ServiceLifetimeDemonstration;
 
 public class GuidTrimmer : IGuidTrimmer
 {
-	private readonly GuidService _guidService;
+	private readonly IGuidService _guidService;
 
-	public GuidTrimmer(GuidService guidService)
+	public GuidTrimmer(IGuidService guidService)
 	{
 		_guidService = guidService;
 	}

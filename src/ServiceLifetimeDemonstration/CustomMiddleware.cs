@@ -13,7 +13,7 @@ public class CustomMiddleware
 		_logger = logger;
 	}
 
-	public async Task InvokeAsync(HttpContext context, GuidService guidService)
+	public async Task InvokeAsync(HttpContext context, IGuidService guidService)
 	{
 		var guid = guidService.GetGuid();
 
